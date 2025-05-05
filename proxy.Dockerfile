@@ -1,4 +1,4 @@
-FROM node:22-alpine AS build-yaml
+FROM ghcr.io/unofficial-docker-for-riscv/baseimage-node:22-alpine as build-yaml
 
 WORKDIR /build
 

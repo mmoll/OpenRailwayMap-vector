@@ -1,4 +1,4 @@
-FROM node:22-alpine AS build-lua
+FROM ghcr.io/unofficial-docker-for-riscv/baseimage-node:22-alpine as build-lua
 
 WORKDIR /build
 
@@ -11,7 +11,7 @@ RUN --mount=type=bind,source=import/tags.lua.js,target=tags.lua.js \
   node tags.lua.js \
     > /build/tags.lua
 
-FROM node:22-alpine AS build-signals
+FROM ghcr.io/unofficial-docker-for-riscv/baseimage-node:22.13.1-alpine3.21 as build-signals
 
 WORKDIR /build
 

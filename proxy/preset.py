@@ -1,7 +1,7 @@
 import re
 from os import environ
 
-from yaml import CLoader as Loader
+from yaml import Loader
 from yaml import load
 from yattag import Doc, indent
 
