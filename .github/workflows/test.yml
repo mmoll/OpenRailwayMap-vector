@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+      - postgres-18-postgis-3.6
   pull_request: ~
 
 concurrency:
