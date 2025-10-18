@@ -114,7 +114,7 @@ CREATE MATERIALIZED VIEW IF NOT EXISTS stations_clustered AS
     feature,
     state,
     array_agg(facilities.id) as station_ids,
-    ST_Centroid(ST_RemoveRepeatedPoints(ST_Collect(way))) as center,
+    ST_Centroid(ST_ConvexHull(ST_RemoveRepeatedPoints(ST_Collect(way)))) as center,
     ST_Buffer(ST_ConvexHull(ST_RemoveRepeatedPoints(ST_Collect(way))), 50) as buffered,
     ST_NumGeometries(ST_RemoveRepeatedPoints(ST_Collect(way))) as count
   FROM (
@@ -135,6 +135,7 @@ CREATE MATERIALIZED VIEW IF NOT EXISTS stations_clustered AS
       left join stop_areas sa
         ON (ARRAY[s.osm_id] <@ sa.node_ref_ids AND s.osm_type = 'N')
           OR (ARRAY[s.osm_id] <@ sa.way_ref_ids AND s.osm_type = 'W')
+          OR (ARRAY[s.osm_id] <@ sa.stop_ref_ids AND s.osm_type = 'N')
       left join (
         select
           sa.osm_id as stop_area_id,
