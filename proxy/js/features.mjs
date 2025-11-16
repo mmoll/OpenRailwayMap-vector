@@ -43,37 +43,40 @@ const featureLinks = {
   },
 };
 
+function allIconCombinations(feature) {
+  const allIcons = feature.icon.map(icon => [
+    {name: icon.description, icon: icon.default ? [icon.default] : []},
+    ...((icon.cases ?? []).map(iconCase => ({ name: iconCase.description ?? icon.description, icon: [iconCase.example ?? iconCase.value]}))),
+  ])
+
+  let combinations = allIcons[0]
+  allIcons.slice(1).forEach(icons => {
+    const newCombinations = []
+
+    combinations.forEach(combination => {
+      icons.forEach(icon => {
+        newCombinations.push({
+          name: [combination.name, icon.name].filter(it => it).join(', '),
+          icon: icon.icon ? [...combination.icon, ...icon.icon] : combination.icon,
+        })
+      })
+    })
+
+    combinations = newCombinations
+  })
+
+  const combinationsWithoutName = combinations.filter(combination => !combination.name)
+  const combinationsWithName = combinations.filter(combination => combination.name)
+
+  return [
+    ...[...new Set(combinationsWithoutName.map(combination => combination.icon.join('|')))].map(icon => [icon, {country: feature.country, name: feature.description}]),
+    ...combinationsWithName.map(combination => [combination.icon.join('|'), {country: feature.country, name: `${feature.description} (${combination.name})`}]),
+  ]
+}
+
 const generateSignalFeatures = (features, types) =>
   requireUniqueEntries([
-    ...features.flatMap(feature => [
-      [
-        feature.icon.default,
-        {
-          country: feature.country,
-          name: feature.description,
-        }
-      ],
-      ...(
-        feature.icon.match
-          ? [
-            ...[...new Set(
-              feature.icon.cases
-                .filter(iconCase => !iconCase.description)
-                .map(iconCase => iconCase.value)
-            )].map(iconCaseValue => [iconCaseValue, {
-              country: feature.country,
-              name: feature.description,
-            }]),
-            ...feature.icon.cases
-              .filter(iconCase => iconCase.description)
-              .map(iconCase => [iconCase.value, {
-                country: feature.country,
-                name: `${feature.description} (${iconCase.description})`,
-              }]),
-          ]
-          : []
-      ),
-    ]),
+    ...features.flatMap(allIconCombinations),
     ...types.map(type => [
       `general/signal-unknown-${type.type}`,
       {
