@@ -526,6 +526,15 @@ local stop_area_groups = osm2pgsql.define_table({
   },
 })
 
+local landuse = osm2pgsql.define_table({
+  name = 'landuse',
+  ids = { type = 'way', id_column = 'osm_id' },
+  columns = {
+    { column = 'id', sql_type = 'serial', create_only = true },
+    { column = 'way', type = 'polygon' },
+  },
+})
+
 local railway_line_states = {}
 -- ordered from lower to higher importance
 local states = {'razed', 'abandoned', 'disused', 'proposed', 'construction', 'preserved'}
@@ -1377,6 +1386,12 @@ function osm2pgsql.process_way(object)
       ref = tags.ref,
       height = tags.height,
       tactile_paving = tags.tactile_paving == 'yes',
+    })
+  end
+
+  if tags.landuse == 'railway' then
+    landuse:insert({
+      way = object:as_polygon(),
     })
   end
 end
