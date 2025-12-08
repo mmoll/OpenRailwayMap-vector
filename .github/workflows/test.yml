@@ -65,17 +65,17 @@ jobs:
           targets: db,import,import-test,api,martin,proxy
           set: |
             db.cache-from=type=gha,scope=db-${{ runner.arch }}
-            ${{ github.ref_name == 'master' && format('db.cache-to=type=gha,mode=max,scope=db-{}', runner.arch) || '' }}
+            ${{ github.ref_name == 'master' && format('db.cache-to=type=gha,mode=max,scope=db-{0}', runner.arch) || '' }}
             import.cache-from=type=gha,scope=import-${{ runner.arch }}
-            ${{ github.ref_name == 'master' && format('import.cache-to=type=gha,mode=max,scope=import-{}', runner.arch) || '' }}
+            ${{ github.ref_name == 'master' && format('import.cache-to=type=gha,mode=max,scope=import-{0}', runner.arch) || '' }}
             import-test.cache-from=type=gha,scope=import-test-${{ runner.arch }}
-            ${{ github.ref_name == 'master' && format('import-test.cache-to=type=gha,mode=max,scope=import-test-{}', runner.arch) || '' }}
+            ${{ github.ref_name == 'master' && format('import-test.cache-to=type=gha,mode=max,scope=import-test-{0}', runner.arch) || '' }}
             api.cache-from=type=gha,scope=api-${{ runner.arch }}
-            ${{ github.ref_name == 'master' && format('api.cache-to=type=gha,mode=max,scope=api-{}', runner.arch) || '' }}
+            ${{ github.ref_name == 'master' && format('api.cache-to=type=gha,mode=max,scope=api-{0}', runner.arch) || '' }}
             martin.cache-from=type=gha,scope=martin-${{ runner.arch }}
-            ${{ github.ref_name == 'master' && format('martin.cache-to=type=gha,mode=max,scope=martin-{}', runner.arch) || '' }}
+            ${{ github.ref_name == 'master' && format('martin.cache-to=type=gha,mode=max,scope=martin-{0}', runner.arch) || '' }}
             proxy.cache-from=type=gha,scope=proxy-${{ runner.arch }}
-            ${{ github.ref_name == 'master' && format('proxy.cache-to=type=gha,mode=max,scope=proxy-{}', runner.arch) || '' }}
+            ${{ github.ref_name == 'master' && format('proxy.cache-to=type=gha,mode=max,scope=proxy-{0}', runner.arch) || '' }}
 
       - name: Start database
         run: |
