@@ -1477,6 +1477,8 @@ const layers = {
       minzoom: 13,
       source: 'openrailwaymap_standard',
       'source-layer': 'standard_railway_grouped_stations',
+      // Yards only have an outline
+      filter: ['!=', ['get', 'feature'], 'yard'],
       paint: {
         'fill-color': ['case',
           ['in', ['get', 'state'], ['literal', ['disused', 'abandoned', 'preserved']]], colors.styles.standard.past,
@@ -1511,6 +1513,8 @@ const layers = {
       filter: ['==', ['get', 'state'], state],
       paint: {
         'line-color': ['case',
+          ['boolean', ['feature-state', 'hover'], false], colors.hover.main,
+          ['==', ['get', 'feature'], 'yard'], colors.styles.standard.yardText,
           // Use outline color of feature, without taking state into account
           ['==', ['get', 'station'], 'light_rail'], colors.styles.standard.light_rail,
           ['==', ['get', 'station'], 'subway'], colors.styles.standard.subway,
@@ -1520,8 +1524,14 @@ const layers = {
           ['==', ['get', 'station'], 'tram'], colors.styles.standard.tram,
           colors.styles.standard.main,
         ],
-        'line-opacity': 0.3,
-        'line-width': 2 ,
+        'line-opacity': ['match', ['get', 'feature'],
+          'yard', 0.2,
+          0.3,
+        ],
+        'line-width': ['match', ['get', 'feature'],
+          'yard', 6,
+          2,
+        ],
         'line-dasharray': dasharray,
       },
     })),
